@@ -122,8 +122,8 @@ create policy "members can view household members"
 create policy "admins can insert members"
   on household_members for insert with check (
     is_admin(household_id) or
-    -- allow self-insert when creating a new household
-    not exists (select 1 from household_members where household_id = household_members.household_id)
+    -- allow the household creator to add the first member (themselves)
+    (select created_by from households where id = household_id) = auth.uid()
   );
 
 create policy "admins can update members"
