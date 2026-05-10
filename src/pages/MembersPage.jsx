@@ -223,25 +223,30 @@ export function MembersPage() {
                     <Badge variant="outline" className="text-xs">You</Badge>
                   )}
                 </div>
-                <div className="flex items-center gap-2 mt-1">
+                <div className="flex items-center gap-2 mt-1 flex-wrap">
                   <Badge variant="secondary" className="text-xs">{t(`household.${m.role}`)}</Badge>
                   <span className="text-xs text-muted-foreground flex items-center gap-1">
                     <Star className="h-3 w-3" />
                     {m.points_balance} {t("common.points_abbr")}
                   </span>
+                  {m.email && (
+                    <span className="text-xs text-muted-foreground">{m.email}</span>
+                  )}
                   {!m.user_id && (
                     <Badge variant="warning" className="text-xs">No account</Badge>
                   )}
                 </div>
               </div>
-              {isAdmin && m.id !== currentMember?.id && (
+              {(isAdmin || m.id === currentMember?.id) && (
                 <div className="flex gap-2 shrink-0" onClick={(e) => e.stopPropagation()}>
                   <Button size="sm" variant="outline" onClick={() => openEdit(m)}>
                     {t("common.edit")}
                   </Button>
-                  <Button size="icon" variant="ghost" onClick={() => handleRemove(m.id)}>
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
+                  {isAdmin && m.id !== currentMember?.id && (
+                    <Button size="icon" variant="ghost" onClick={() => handleRemove(m.id)}>
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  )}
                 </div>
               )}
             </CardContent>
@@ -270,17 +275,22 @@ export function MembersPage() {
       {/* Edit member modal */}
       <Modal open={!!showEditModal} onClose={() => setShowEditModal(null)} title={t("common.edit")}>
         <form onSubmit={handleEdit} className="space-y-4">
+          {showEditModal?.email && (
+            <p className="text-sm text-muted-foreground">{showEditModal.email}</p>
+          )}
           <div className="space-y-1.5">
             <Label>{t("members.display_name")}</Label>
             <Input value={editName} onChange={(e) => setEditName(e.target.value)} required />
           </div>
-          <div className="space-y-1.5">
-            <Label>{t("members.role")}</Label>
-            <Select value={editRole} onChange={(e) => setEditRole(e.target.value)}>
-              <option value="admin">{t("household.admin")}</option>
-              <option value="member">{t("household.member")}</option>
-            </Select>
-          </div>
+          {isAdmin && showEditModal?.id !== currentMember?.id && (
+            <div className="space-y-1.5">
+              <Label>{t("members.role")}</Label>
+              <Select value={editRole} onChange={(e) => setEditRole(e.target.value)}>
+                <option value="admin">{t("household.admin")}</option>
+                <option value="member">{t("household.member")}</option>
+              </Select>
+            </div>
+          )}
           <div className="flex gap-2 justify-end">
             <Button type="button" variant="outline" onClick={() => setShowEditModal(null)}>{t("common.cancel")}</Button>
             <Button type="submit" disabled={updateMember.isPending}>{t("common.save")}</Button>

@@ -27,9 +27,10 @@ export function useCreateHousehold() {
         .single()
       if (hhErr) throw hhErr
 
+      const { data: { user } } = await supabase.auth.getUser()
       const { error: memErr } = await supabase
         .from("household_members")
-        .insert({ household_id: hh.id, user_id: userId, display_name: "Admin", role: "admin", points_balance: 0 })
+        .insert({ household_id: hh.id, user_id: userId, display_name: "Admin", role: "admin", points_balance: 0, email: user?.email })
       if (memErr) throw memErr
 
       return hh

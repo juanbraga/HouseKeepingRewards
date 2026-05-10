@@ -57,6 +57,9 @@ export function useAcceptInvite() {
         .single()
       if (existing) throw new Error("already_member")
 
+      // Get current user email
+      const { data: { user } } = await supabase.auth.getUser()
+
       // Create member record
       const { error: memErr } = await supabase
         .from("household_members")
@@ -67,6 +70,7 @@ export function useAcceptInvite() {
           role: "member",
           points_balance: 0,
           avatar_color: "#0891b2",
+          email: user?.email,
         })
       if (memErr) throw memErr
 
