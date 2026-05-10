@@ -15,14 +15,20 @@ import { Badge } from "@/components/ui/Badge"
 import { Modal } from "@/components/ui/Modal"
 import { useToast } from "@/components/ui/Toast"
 
-function AvatarCircle({ name, color, size = "md" }) {
-  const sizeClass = size === "lg" ? "h-12 w-12 text-base" : "h-9 w-9 text-sm"
+const ANIMAL_AVATARS = [
+  "🐶","🐱","🐭","🐹","🐰","🦊","🐻","🐼","🐨","🐯",
+  "🦁","🐸","🐮","🐷","🐙","🦋","🐝","🦄","🐬","🦔",
+  "🐧","🦆","🦉","🦋","🐺","🦝","🦘","🐊","🦒","🐘",
+]
+
+export function AvatarCircle({ name, color, avatarEmoji, size = "md" }) {
+  const sizeClass = size === "lg" ? "h-12 w-12 text-2xl" : "h-9 w-9 text-lg"
   return (
     <div
-      className={`flex items-center justify-center rounded-full text-white font-bold shrink-0 ${sizeClass}`}
-      style={{ backgroundColor: color || "#7c3aed" }}
+      className={`flex items-center justify-center rounded-full shrink-0 ${sizeClass} ${avatarEmoji ? "bg-muted" : "text-white font-bold"}`}
+      style={!avatarEmoji ? { backgroundColor: color || "#7c3aed" } : {}}
     >
-      {name?.charAt(0)?.toUpperCase() || "?"}
+      {avatarEmoji || name?.charAt(0)?.toUpperCase() || "?"}
     </div>
   )
 }
@@ -39,7 +45,7 @@ function MemberActivityPanel({ member, lang, onClose }) {
       <div className="relative z-50 ml-auto h-full w-full max-w-sm bg-card border-l shadow-xl flex flex-col">
         {/* Header */}
         <div className="flex items-center gap-3 p-4 border-b">
-          <AvatarCircle name={member.display_name} color={member.avatar_color} size="lg" />
+          <AvatarCircle name={member.display_name} color={member.avatar_color} avatarEmoji={member.avatar_emoji} size="lg" />
           <div className="flex-1">
             <p className="font-semibold">{member.display_name}</p>
             <p className="text-sm text-muted-foreground flex items-center gap-1">
@@ -137,6 +143,7 @@ export function MembersPage() {
   const [copied, setCopied] = useState(false)
   const [editName, setEditName] = useState("")
   const [editRole, setEditRole] = useState("member")
+  const [editEmoji, setEditEmoji] = useState("")
   const [selectedMember, setSelectedMember] = useState(null)
 
   const isAdmin = currentMember?.role === "admin"
@@ -172,6 +179,7 @@ export function MembersPage() {
     setShowEditModal(m)
     setEditName(m.display_name)
     setEditRole(m.role)
+    setEditEmoji(m.avatar_emoji || "")
   }
 
   const handleEdit = async (e) => {
@@ -179,7 +187,7 @@ export function MembersPage() {
     try {
       await updateMember.mutateAsync({
         memberId: showEditModal.id, householdId: activeHouseholdId,
-        display_name: editName.trim(), role: editRole,
+        display_name: editName.trim(), role: editRole, avatar_emoji: editEmoji || null,
       })
       toast({ message: t("common.save") + " ✓" })
       setShowEditModal(null)
@@ -214,7 +222,7 @@ export function MembersPage() {
             onClick={() => setSelectedMember(m)}
           >
             <CardContent className="flex items-center gap-4 p-4">
-              <AvatarCircle name={m.display_name} color={m.avatar_color} size="lg" />
+              <AvatarCircle name={m.display_name} color={m.avatar_color} avatarEmoji={m.avatar_emoji} size="lg" />
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2">
                   <p className="font-medium">{m.display_name}</p>
@@ -278,6 +286,32 @@ export function MembersPage() {
           {showEditModal?.email && (
             <p className="text-sm text-muted-foreground">{showEditModal.email}</p>
           )}
+
+          {/* Avatar preview + picker */}
+          <div className="space-y-2">
+            <Label>Avatar</Label>
+            <div className="flex items-center gap-3 mb-1">
+              <AvatarCircle name={editName} color={showEditModal?.avatar_color} avatarEmoji={editEmoji} size="lg" />
+              {editEmoji && (
+                <button type="button" className="text-xs text-muted-foreground hover:text-destructive" onClick={() => setEditEmoji("")}>
+                  Remove
+                </button>
+              )}
+            </div>
+            <div className="grid grid-cols-10 gap-1">
+              {ANIMAL_AVATARS.map((emoji) => (
+                <button
+                  key={emoji}
+                  type="button"
+                  onClick={() => setEditEmoji(emoji)}
+                  className={`text-xl p-1 rounded-md transition-colors hover:bg-accent ${editEmoji === emoji ? "bg-primary/20 ring-2 ring-primary" : ""}`}
+                >
+                  {emoji}
+                </button>
+              ))}
+            </div>
+          </div>
+
           <div className="space-y-1.5">
             <Label>{t("members.display_name")}</Label>
             <Input value={editName} onChange={(e) => setEditName(e.target.value)} required />

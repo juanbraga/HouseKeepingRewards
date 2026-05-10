@@ -7,17 +7,7 @@ import { useTaskCompletions } from "@/hooks/useTasks"
 import { useMemberActivity } from "@/hooks/useMemberActivity"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card"
 import { Badge } from "@/components/ui/Badge"
-
-function AvatarCircle({ name, color }) {
-  return (
-    <div
-      className="flex h-9 w-9 items-center justify-center rounded-full text-white text-sm font-bold shrink-0"
-      style={{ backgroundColor: color || "#7c3aed" }}
-    >
-      {name?.charAt(0)?.toUpperCase() || "?"}
-    </div>
-  )
-}
+import { AvatarCircle } from "@/pages/MembersPage"
 
 export function DashboardPage() {
   const { t, i18n } = useTranslation()
@@ -142,7 +132,7 @@ export function DashboardPage() {
               {members?.map((m, idx) => (
                 <div key={m.id} className="flex items-center gap-3">
                   <span className="w-5 text-sm font-bold text-muted-foreground">{idx + 1}</span>
-                  <AvatarCircle name={m.display_name} color={m.avatar_color} />
+                  <AvatarCircle name={m.display_name} color={m.avatar_color} avatarEmoji={m.avatar_emoji} />
                   <div className="flex-1">
                     <p className="text-sm font-medium">
                       {m.display_name}
@@ -170,7 +160,7 @@ export function DashboardPage() {
               )}
               {completions?.map((c) => (
                 <div key={c.id} className="flex items-center gap-3">
-                  <AvatarCircle name={c.member?.display_name} color={c.member?.avatar_color} />
+                  <AvatarCircle name={c.member?.display_name} color={c.member?.avatar_color} avatarEmoji={c.member?.avatar_emoji} />
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium truncate">
                       {c.task?.[`name_${lang}`] || c.task?.name_en}
