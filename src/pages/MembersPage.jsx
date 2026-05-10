@@ -79,7 +79,7 @@ function MemberActivityPanel({ member, lang, onClose }) {
                     <div className="flex-1 min-w-0">
                       <p className="font-medium truncate">{c.task?.[`name_${lang}`] || c.task?.name_en}</p>
                       <p className="text-xs text-muted-foreground">
-                        {new Date(c.completed_at).toLocaleDateString()}
+                        {new Date(c.completed_at).toLocaleString()}
                       </p>
                     </div>
                     <Badge variant="success">+{c.points_earned}</Badge>

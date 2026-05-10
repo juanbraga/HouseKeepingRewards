@@ -34,6 +34,7 @@ export function TasksPage() {
   const [showCompleteModal, setShowCompleteModal] = useState(null)
   const [activeTab, setActiveTab] = useState("custom")
   const [notes, setNotes] = useState("")
+  const [completedAt, setCompletedAt] = useState("")
   const [filterCategory, setFilterCategory] = useState("all")
 
   const [form, setForm] = useState({
@@ -41,16 +42,26 @@ export function TasksPage() {
     points: 10, frequency: "weekly", category: "cleaning",
   })
 
+  const openCompleteModal = (task) => {
+    // Default to current local datetime
+    const now = new Date()
+    now.setMinutes(now.getMinutes() - now.getTimezoneOffset())
+    setCompletedAt(now.toISOString().slice(0, 16))
+    setShowCompleteModal(task)
+  }
+
   const handleComplete = async (task) => {
     if (!member) return
     try {
       await completeTask.mutateAsync({
         taskId: task.id, memberId: member.id,
         householdId: activeHouseholdId, points: task.points, notes,
+        completedAt: completedAt ? new Date(completedAt).toISOString() : new Date().toISOString(),
       })
       toast({ message: `+${task.points} ${t("common.points")}! ✓` })
       setShowCompleteModal(null)
       setNotes("")
+      setCompletedAt("")
     } catch {
       toast({ message: t("common.error"), type: "error" })
     }
@@ -154,7 +165,7 @@ export function TasksPage() {
               </div>
               <Badge variant="success" className="shrink-0">+{task.points} {t("common.points_abbr")}</Badge>
               <div className="flex gap-2 shrink-0">
-                <Button size="sm" onClick={() => setShowCompleteModal(task)}>
+                <Button size="sm" onClick={() => openCompleteModal(task)}>
                   <CheckCircle className="h-4 w-4" />
                   {t("tasks.complete")}
                 </Button>
@@ -170,7 +181,7 @@ export function TasksPage() {
       {/* Complete task modal */}
       <Modal
         open={!!showCompleteModal}
-        onClose={() => { setShowCompleteModal(null); setNotes("") }}
+        onClose={() => { setShowCompleteModal(null); setNotes(""); setCompletedAt("") }}
         title={showCompleteModal?.[`name_${lang}`] || showCompleteModal?.name_en || ""}
       >
         <div className="space-y-4">
@@ -178,11 +189,21 @@ export function TasksPage() {
             {t("tasks.complete")} — <span className="font-medium text-green-600">+{showCompleteModal?.points} {t("common.points")}</span>
           </p>
           <div className="space-y-1.5">
+            <Label htmlFor="completed-at">Date & time</Label>
+            <Input
+              id="completed-at"
+              type="datetime-local"
+              value={completedAt}
+              onChange={(e) => setCompletedAt(e.target.value)}
+              max={new Date(new Date().setMinutes(new Date().getMinutes() - new Date().getTimezoneOffset())).toISOString().slice(0, 16)}
+            />
+          </div>
+          <div className="space-y-1.5">
             <Label htmlFor="notes">{t("tasks.notes")}</Label>
             <Input id="notes" value={notes} onChange={(e) => setNotes(e.target.value)} />
           </div>
           <div className="flex gap-2 justify-end">
-            <Button variant="outline" onClick={() => { setShowCompleteModal(null); setNotes("") }}>
+            <Button variant="outline" onClick={() => { setShowCompleteModal(null); setNotes(""); setCompletedAt("") }}>
               {t("common.cancel")}
             </Button>
             <Button onClick={() => handleComplete(showCompleteModal)} disabled={completeTask.isPending}>

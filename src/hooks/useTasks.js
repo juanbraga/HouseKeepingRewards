@@ -54,10 +54,10 @@ export function useTaskCompletions(householdId, limit = 20) {
 export function useCompleteTask() {
   const qc = useQueryClient()
   return useMutation({
-    mutationFn: async ({ taskId, memberId, householdId, points, notes }) => {
+    mutationFn: async ({ taskId, memberId, householdId, points, notes, completedAt }) => {
       const { error: compErr } = await supabase
         .from("task_completions")
-        .insert({ task_id: taskId, member_id: memberId, points_earned: points, notes })
+        .insert({ task_id: taskId, member_id: memberId, points_earned: points, notes, completed_at: completedAt })
       if (compErr) throw compErr
 
       const { data: member, error: fetchErr } = await supabase

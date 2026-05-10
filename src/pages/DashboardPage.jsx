@@ -94,7 +94,7 @@ export function DashboardPage() {
                   <CheckSquare className="h-4 w-4 text-green-500 shrink-0" />
                   <span className="flex-1 truncate">{c.task?.[`name_${lang}`] || c.task?.name_en}</span>
                   <span className="text-xs text-muted-foreground shrink-0">
-                    {new Date(c.completed_at).toLocaleDateString()}
+                    {new Date(c.completed_at).toLocaleString()}
                   </span>
                   <Badge variant="success">+{c.points_earned}</Badge>
                 </div>
@@ -175,7 +175,9 @@ export function DashboardPage() {
                     <p className="text-sm font-medium truncate">
                       {c.task?.[`name_${lang}`] || c.task?.name_en}
                     </p>
-                    <p className="text-xs text-muted-foreground">{c.member?.display_name}</p>
+                    <p className="text-xs text-muted-foreground">
+                      {c.member?.display_name} · {new Date(c.completed_at).toLocaleString()}
+                    </p>
                   </div>
                   <Badge variant="success">+{c.points_earned}</Badge>
                 </div>
