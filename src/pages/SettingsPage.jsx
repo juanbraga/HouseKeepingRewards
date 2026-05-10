@@ -1,8 +1,9 @@
 import { useState } from "react"
 import { useTranslation } from "react-i18next"
 import { useNavigate } from "react-router-dom"
-import { Globe } from "lucide-react"
+import { Globe, Moon, Sun, Palette } from "lucide-react"
 import { supabase } from "@/lib/supabase"
+import { useTheme } from "@/context/ThemeContext"
 import { useHouseholdContext } from "@/context/HouseholdContext"
 import { useHouseholds } from "@/hooks/useHousehold"
 import { useAuth } from "@/hooks/useAuth"
@@ -22,6 +23,7 @@ export function SettingsPage() {
   const { activeHouseholdId, setActiveHouseholdId } = useHouseholdContext()
   const { data: households } = useHouseholds(user?.id)
   const activeHousehold = households?.find((h) => h.id === activeHouseholdId)
+  const { theme, setTheme, dark, setDark } = useTheme()
 
   const [hhName, setHhName] = useState(activeHousehold?.name || "")
   const [saving, setSaving] = useState(false)
@@ -77,6 +79,49 @@ export function SettingsPage() {
   return (
     <div className="space-y-6 max-w-lg">
       <h1 className="text-2xl font-bold">{t("settings.title")}</h1>
+
+      {/* Theme */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-base flex items-center gap-2">
+            <Palette className="h-4 w-4" />
+            Theme
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          <div className="flex gap-2">
+            {[
+              { id: "purple", label: "Purple", color: "#7c3aed" },
+              { id: "ocean",  label: "Ocean",  color: "#1d6eba" },
+              { id: "forest", label: "Forest", color: "#22a84a" },
+            ].map(({ id, label, color }) => (
+              <button
+                key={id}
+                onClick={() => setTheme(id)}
+                className={`flex items-center gap-2 px-4 py-2 rounded-md border text-sm font-medium transition-all ${theme === id ? "border-2 shadow-sm" : "border opacity-60 hover:opacity-100"}`}
+                style={theme === id ? { borderColor: color, color } : {}}
+              >
+                <span className="h-3 w-3 rounded-full shrink-0" style={{ backgroundColor: color }} />
+                {label}
+              </button>
+            ))}
+          </div>
+
+          {/* Dark mode */}
+          <div className="flex items-center justify-between pt-2 border-t">
+            <div className="flex items-center gap-2 text-sm font-medium">
+              {dark ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
+              Dark mode
+            </div>
+            <button
+              onClick={() => setDark((d) => !d)}
+              className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${dark ? "bg-primary" : "bg-muted"}`}
+            >
+              <span className={`inline-block h-4 w-4 transform rounded-full bg-white shadow transition-transform ${dark ? "translate-x-6" : "translate-x-1"}`} />
+            </button>
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Language */}
       <Card>

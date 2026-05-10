@@ -3,6 +3,7 @@
 @tailwind utilities;
 
 @layer base {
+  /* ── Purple (default) ───────────────────────── */
   :root {
     --background: 0 0% 100%;
     --foreground: 222.2 84% 4.9%;
@@ -10,11 +11,11 @@
     --card-foreground: 222.2 84% 4.9%;
     --primary: 262 83% 58%;
     --primary-foreground: 210 40% 98%;
-    --secondary: 210 40% 96.1%;
+    --secondary: 270 40% 96%;
     --secondary-foreground: 222.2 47.4% 11.2%;
-    --muted: 210 40% 96.1%;
+    --muted: 270 40% 96%;
     --muted-foreground: 215.4 16.3% 46.9%;
-    --accent: 210 40% 96.1%;
+    --accent: 270 40% 96%;
     --accent-foreground: 222.2 47.4% 11.2%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
@@ -25,23 +26,73 @@
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
+    --background: 224 20% 8%;
     --foreground: 210 40% 98%;
-    --card: 222.2 84% 4.9%;
+    --card: 224 20% 11%;
     --card-foreground: 210 40% 98%;
     --primary: 263 70% 65%;
     --primary-foreground: 222.2 47.4% 11.2%;
-    --secondary: 217.2 32.6% 17.5%;
+    --secondary: 224 20% 16%;
     --secondary-foreground: 210 40% 98%;
-    --muted: 217.2 32.6% 17.5%;
+    --muted: 224 20% 16%;
     --muted-foreground: 215 20.2% 65.1%;
-    --accent: 217.2 32.6% 17.5%;
+    --accent: 224 20% 16%;
     --accent-foreground: 210 40% 98%;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 210 40% 98%;
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
+    --border: 224 20% 18%;
+    --input: 224 20% 18%;
     --ring: 263 70% 65%;
+  }
+
+  /* ── Ocean (blue) ───────────────────────────── */
+  .theme-ocean {
+    --primary: 210 90% 52%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 210 40% 96%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+    --muted: 210 40% 96%;
+    --accent: 210 40% 96%;
+    --ring: 210 90% 52%;
+  }
+
+  .theme-ocean.dark {
+    --primary: 210 80% 62%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 214 25% 16%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 214 25% 16%;
+    --accent: 214 25% 16%;
+    --ring: 210 80% 62%;
+    --background: 214 30% 7%;
+    --card: 214 25% 10%;
+    --border: 214 25% 18%;
+    --input: 214 25% 18%;
+  }
+
+  /* ── Forest (green) ─────────────────────────── */
+  .theme-forest {
+    --primary: 142 71% 40%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 142 30% 95%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+    --muted: 142 30% 95%;
+    --accent: 142 30% 95%;
+    --ring: 142 71% 40%;
+  }
+
+  .theme-forest.dark {
+    --primary: 142 60% 50%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 150 20% 14%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 150 20% 14%;
+    --accent: 150 20% 14%;
+    --ring: 142 60% 50%;
+    --background: 150 25% 7%;
+    --card: 150 20% 10%;
+    --border: 150 20% 17%;
+    --input: 150 20% 17%;
   }
 }
 
