@@ -32,11 +32,23 @@ export function AuthPage() {
       if (mode === "signin") {
         const { error } = await supabase.auth.signInWithPassword({ email, password })
         if (error) throw error
-        navigate("/dashboard")
+        const pendingToken = sessionStorage.getItem("pendingInviteToken")
+        if (pendingToken) {
+          sessionStorage.removeItem("pendingInviteToken")
+          navigate(`/join/${pendingToken}`)
+        } else {
+          navigate("/dashboard")
+        }
       } else {
         const { error } = await supabase.auth.signUp({ email, password })
         if (error) throw error
-        navigate("/households")
+        const pendingToken = sessionStorage.getItem("pendingInviteToken")
+        if (pendingToken) {
+          sessionStorage.removeItem("pendingInviteToken")
+          navigate(`/join/${pendingToken}`)
+        } else {
+          navigate("/households")
+        }
       }
     } catch (err) {
       toast({ message: err.message || t("auth.invalid_credentials"), type: "error" })

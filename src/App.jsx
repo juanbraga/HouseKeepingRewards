@@ -11,6 +11,7 @@ import { TasksPage } from "@/pages/TasksPage"
 import { RewardsPage } from "@/pages/RewardsPage"
 import { MembersPage } from "@/pages/MembersPage"
 import { SettingsPage } from "@/pages/SettingsPage"
+import { JoinPage } from "@/pages/JoinPage"
 import { useAuth } from "@/hooks/useAuth"
 
 function ProtectedRoute({ children }) {
@@ -28,6 +29,7 @@ function AppRoutes() {
     <Routes>
       <Route path="/auth" element={user ? <Navigate to="/dashboard" replace /> : <AuthPage />} />
       <Route path="/households" element={<ProtectedRoute><HouseholdsPage /></ProtectedRoute>} />
+      <Route path="/join/:token" element={<JoinPage />} />
       <Route element={<ProtectedRoute><Layout /></ProtectedRoute>}>
         <Route path="/dashboard" element={<DashboardPage />} />
         <Route path="/tasks" element={<TasksPage />} />
